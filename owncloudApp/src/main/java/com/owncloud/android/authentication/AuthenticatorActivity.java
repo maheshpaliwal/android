@@ -76,7 +76,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.snackbar.Snackbar;
-import com.owncloud.android.BuildConfig;
 import com.owncloud.android.MainApp;
 import com.owncloud.android.R;
 import com.owncloud.android.authentication.SAMLWebViewClient.SsoWebViewClientListener;

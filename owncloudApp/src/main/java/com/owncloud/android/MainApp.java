@@ -65,17 +65,25 @@ public class MainApp extends Application {
     private static final String POLICY_SINGLE_SESSION_PER_ACCOUNT = "single session per account";
     @SuppressWarnings("unused")
     private static final String POLICY_ALWAYS_NEW_CLIENT = "always new client";
-    private static final int DEFAULT_0 = 0;
+    private static final int CLICKS_DEFAULT = 0;
 
     private static Context mContext;
 
-    private static boolean mDeveloper;
-
     public void onCreate() {
         super.onCreate();
-        MainApp.mContext = getApplicationContext();
 
-        readIsDeveloper();
+        mContext = getApplicationContext();
+
+        if (isDeveloper()) {
+            String dataFolder = getDataFolder();
+
+            // Set folder for store logs
+            Log_OC.setLogDataFolder(dataFolder);
+
+            Log_OC.startLogging(Environment.getExternalStorageDirectory().getAbsolutePath());
+            Log_OC.d(BuildConfig.BUILD_TYPE, "start logging " + BuildConfig.VERSION_NAME + " " +
+                    BuildConfig.COMMIT_SHA1);
+        }
 
         OwnCloudClient.setContext(mContext);
 
@@ -135,7 +143,7 @@ public class MainApp extends Application {
 
             @Override
             public void onActivityStarted(Activity activity) {
-                Log_OC.v(activity.getClass().getSimpleName(), "onStart() starting");
+                Log_OC.d(activity.getClass().getSimpleName(), "onStart() starting");
                 PassCodeManager.getPassCodeManager().onActivityStarted(activity);
                 PatternManager.getPatternManager().onActivityStarted(activity);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -145,17 +153,17 @@ public class MainApp extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                Log_OC.v(activity.getClass().getSimpleName(), "onResume() starting");
+                Log_OC.d(activity.getClass().getSimpleName(), "onResume() starting");
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                Log_OC.v(activity.getClass().getSimpleName(), "onPause() ending");
+                Log_OC.d(activity.getClass().getSimpleName(), "onPause() ending");
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
-                Log_OC.v(activity.getClass().getSimpleName(), "onStop() ending");
+                Log_OC.d(activity.getClass().getSimpleName(), "onStop() ending");
                 PassCodeManager.getPassCodeManager().onActivityStopped(activity);
                 PatternManager.getPatternManager().onActivityStopped(activity);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -170,18 +178,18 @@ public class MainApp extends Application {
 
             @Override
             public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                Log_OC.v(activity.getClass().getSimpleName(), "onSaveInstanceState(Bundle) starting");
+                Log_OC.d(activity.getClass().getSimpleName(), "onSaveInstanceState(Bundle) starting");
             }
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-                Log_OC.v(activity.getClass().getSimpleName(), "onDestroy() ending");
+                Log_OC.d(activity.getClass().getSimpleName(), "onDestroy() ending");
             }
         });
     }
 
     public static Context getAppContext() {
-        return MainApp.mContext;
+        return mContext;
     }
 
     /**
@@ -235,25 +243,7 @@ public class MainApp extends Application {
     }
 
     public static boolean isDeveloper() {
-        return mDeveloper;
+        return BuildConfig.DEBUG || PreferenceManager.getDefaultSharedPreferences(getAppContext())
+                .getInt(CLICK_DEV_MENU, CLICKS_DEFAULT) > CLICKS_NEEDED_TO_BE_DEVELOPER;
     }
-
-    public void readIsDeveloper() {
-        mDeveloper = BuildConfig.DEBUG || PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                .getInt(CLICK_DEV_MENU, DEFAULT_0) > CLICKS_NEEDED_TO_BE_DEVELOPER;
-
-
-        if (isDeveloper()) {
-
-            String dataFolder = getDataFolder();
-
-            // Set folder for store logs
-            Log_OC.setLogDataFolder(dataFolder);
-
-            Log_OC.startLogging(Environment.getExternalStorageDirectory().getAbsolutePath());
-            Log_OC.d(BuildConfig.BUILD_TYPE, "start logging " + BuildConfig.VERSION_NAME + " " +
-                    BuildConfig.COMMIT_SHA1);
-        }
-    }
-
 }
