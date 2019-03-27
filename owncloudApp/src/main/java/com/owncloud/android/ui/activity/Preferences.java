@@ -542,6 +542,7 @@ public class Preferences extends PreferenceActivity {
                             Toast.LENGTH_SHORT).show();
                 }
                 mAppPrefs.edit().putInt(MainApp.CLICK_DEV_MENU, clickCount + 1).apply();
+                ((MainApp) getApplication()).startLogIfDeveloper();
                 return true;
             });
         }

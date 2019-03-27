@@ -30,7 +30,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 import com.owncloud.android.MainApp;
-import com.owncloud.android.lib.BuildConfig;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.ui.activity.FingerprintActivity;
 

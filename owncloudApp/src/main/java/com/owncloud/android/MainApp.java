@@ -74,16 +74,7 @@ public class MainApp extends Application {
 
         mContext = getApplicationContext();
 
-        if (isDeveloper()) {
-            String dataFolder = getDataFolder();
-
-            // Set folder for store logs
-            Log_OC.setLogDataFolder(dataFolder);
-
-            Log_OC.startLogging(Environment.getExternalStorageDirectory().getAbsolutePath());
-            Log_OC.d(BuildConfig.BUILD_TYPE, "start logging " + BuildConfig.VERSION_NAME + " " +
-                    BuildConfig.COMMIT_SHA1);
-        }
+        startLogIfDeveloper();
 
         OwnCloudClient.setContext(mContext);
 
@@ -245,5 +236,18 @@ public class MainApp extends Application {
     public static boolean isDeveloper() {
         return BuildConfig.DEBUG || PreferenceManager.getDefaultSharedPreferences(getAppContext())
                 .getInt(CLICK_DEV_MENU, CLICKS_DEFAULT) > CLICKS_NEEDED_TO_BE_DEVELOPER;
+    }
+
+    public void startLogIfDeveloper() {
+        if (isDeveloper()) {
+            String dataFolder = getDataFolder();
+
+            // Set folder for store logs
+            Log_OC.setLogDataFolder(dataFolder);
+
+            Log_OC.startLogging(Environment.getExternalStorageDirectory().getAbsolutePath());
+            Log_OC.d(BuildConfig.BUILD_TYPE, "start logging " + BuildConfig.VERSION_NAME + " " +
+                    BuildConfig.COMMIT_SHA1);
+        }
     }
 }
