@@ -111,11 +111,11 @@ class PublicShareDialogFragment : DialogFragment() {
      * UI elements
      */
 
-    private var nameSelectionLayout: LinearLayout? = null
+    private lateinit var nameSelectionLayout: LinearLayout
     private var nameValueEdit: EditText? = null
     private var passwordLabel: TextView? = null
     private var passwordSwitch: SwitchCompat? = null
-    private var passwordValueEdit: EditText? = null
+    private lateinit var passwordValueEdit: EditText
     private var expirationDateLabel: TextView? = null
     private var expirationDateSwitch: SwitchCompat? = null
     private var expirationDateExplanationLabel: TextView? = null
@@ -130,7 +130,7 @@ class PublicShareDialogFragment : DialogFragment() {
         get() = file?.isFolder == true || publicShare?.isFolder == true
 
     private val isPasswordVisible: Boolean
-        get() = view != null && passwordValueEdit!!.inputType and
+        get() = view != null && passwordValueEdit.inputType and
                 InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
 
     private// Parse expiration date and convert it to milliseconds
@@ -244,8 +244,8 @@ class PublicShareDialogFragment : DialogFragment() {
             if (publicShare!!.isPasswordProtected) {
 
                 setPasswordSwitchChecked(true)
-                passwordValueEdit!!.visibility = View.VISIBLE
-                passwordValueEdit!!.setHint(R.string.share_via_link_default_password)
+                passwordValueEdit.visibility = View.VISIBLE
+                passwordValueEdit.setHint(R.string.share_via_link_default_password)
             }
 
             if (publicShare!!.expirationDate != 0L) {
@@ -282,7 +282,7 @@ class PublicShareDialogFragment : DialogFragment() {
     private fun onSaveShareSetting() {
         // Get data filled by user
         val publicLinkName = nameValueEdit!!.text.toString()
-        var publicLinkPassword: String? = passwordValueEdit!!.text.toString()
+        var publicLinkPassword: String? = passwordValueEdit.text.toString()
         val publicLinkExpirationDateInMillis = expirationDateValueInMillis
 
         val publicLinkPermissions: Int
@@ -357,7 +357,7 @@ class PublicShareDialogFragment : DialogFragment() {
         } else { // Updating an existing public share
             if (!passwordSwitch!!.isChecked) {
                 publicLinkPassword = ""
-            } else if (passwordValueEdit!!.length() == 0) {
+            } else if (passwordValueEdit.text.isEmpty()) {
                 // User has not added a new password, so do not update it
                 publicLinkPassword = null
             }
@@ -374,7 +374,7 @@ class PublicShareDialogFragment : DialogFragment() {
     }
 
     private fun initPasswordFocusChangeListener() {
-        passwordValueEdit!!.setOnFocusChangeListener { v: View, hasFocus: Boolean ->
+        passwordValueEdit.setOnFocusChangeListener { v: View, hasFocus: Boolean ->
             if (v.id == R.id.shareViaLinkPasswordValue) {
                 onPasswordFocusChanged(hasFocus)
             }
@@ -382,7 +382,7 @@ class PublicShareDialogFragment : DialogFragment() {
     }
 
     private fun initPasswordToggleListener() {
-        passwordValueEdit!!.setOnTouchListener(object : RightDrawableOnTouchListener() {
+        passwordValueEdit.setOnTouchListener(object : RightDrawableOnTouchListener() {
             override fun onDrawableTouch(event: MotionEvent): Boolean {
                 if (event.action == MotionEvent.ACTION_UP) {
                     onViewPasswordClick()
@@ -454,9 +454,9 @@ class PublicShareDialogFragment : DialogFragment() {
             } else {
                 showPassword()
             }
-            passwordValueEdit!!.setSelection(
-                passwordValueEdit!!.selectionStart,
-                passwordValueEdit!!.selectionEnd
+            passwordValueEdit.setSelection(
+                passwordValueEdit.selectionStart,
+                passwordValueEdit.selectionEnd
             )
         }
     }
@@ -467,19 +467,19 @@ class PublicShareDialogFragment : DialogFragment() {
         else
             R.drawable.ic_hide_black
         if (view != null) {
-            passwordValueEdit!!.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable, 0)
+            passwordValueEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable, 0)
         }
     }
 
     private fun hidePasswordButton() {
         if (view != null) {
-            passwordValueEdit!!.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            passwordValueEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
     }
 
     private fun showPassword() {
         if (view != null) {
-            passwordValueEdit!!.inputType = InputType.TYPE_CLASS_TEXT or
+            passwordValueEdit.inputType = InputType.TYPE_CLASS_TEXT or
                     InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or
                     InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             showViewPasswordButton()
@@ -488,7 +488,7 @@ class PublicShareDialogFragment : DialogFragment() {
 
     private fun hidePassword() {
         if (view != null) {
-            passwordValueEdit!!.inputType = InputType.TYPE_CLASS_TEXT or
+            passwordValueEdit.inputType = InputType.TYPE_CLASS_TEXT or
                     InputType.TYPE_TEXT_VARIATION_PASSWORD or
                     InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             showViewPasswordButton()
@@ -546,8 +546,8 @@ class PublicShareDialogFragment : DialogFragment() {
          */
         override fun onCheckedChanged(switchView: CompoundButton, isChecked: Boolean) {
             if (isChecked) {
-                passwordValueEdit!!.visibility = View.VISIBLE
-                passwordValueEdit!!.requestFocus()
+                passwordValueEdit.visibility = View.VISIBLE
+                passwordValueEdit.requestFocus()
 
                 // Show keyboard to fill in the password
                 val mgr = activity!!.getSystemService(
@@ -556,8 +556,8 @@ class PublicShareDialogFragment : DialogFragment() {
                 mgr.showSoftInput(passwordValueEdit, InputMethodManager.SHOW_IMPLICIT)
 
             } else {
-                passwordValueEdit!!.visibility = View.GONE
-                passwordValueEdit!!.text.clear()
+                passwordValueEdit.visibility = View.GONE
+                passwordValueEdit.text.clear()
             }
         }
     }
@@ -682,7 +682,7 @@ class PublicShareDialogFragment : DialogFragment() {
 
         // Server version <= 9.x, multiple public sharing not supported
         if (!serverVersion.isMultiplePublicSharingSupported) {
-            nameSelectionLayout!!.visibility = View.GONE
+            nameSelectionLayout.visibility = View.GONE
         } else {
             dialog.window!!.setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
@@ -779,13 +779,13 @@ class PublicShareDialogFragment : DialogFragment() {
     private fun setPasswordNotEnforced() {
         passwordLabel!!.setText(R.string.share_via_link_password_label)
         passwordSwitch!!.visibility = View.VISIBLE
-        passwordValueEdit!!.visibility = View.GONE
+        passwordValueEdit.visibility = View.GONE
     }
 
     private fun setPasswordEnforced() {
         passwordLabel!!.setText(R.string.share_via_link_password_enforced_label)
         passwordSwitch!!.visibility = View.GONE
-        passwordValueEdit!!.visibility = View.VISIBLE
+        passwordValueEdit.visibility = View.VISIBLE
     }
 
     /**

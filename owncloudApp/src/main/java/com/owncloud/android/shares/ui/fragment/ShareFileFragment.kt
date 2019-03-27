@@ -422,9 +422,7 @@ class ShareFileFragment : Fragment(), ShareUserListAdapter.ShareUserAdapterListe
             noShares.visibility = View.GONE
             usersList.visibility = View.VISIBLE
             usersList.adapter = userGroupsAdapter
-            setListViewHeightBasedOnChildren(
-                usersList
-            )
+            setListViewHeightBasedOnChildren(usersList)
         } else {
             noShares.visibility = View.VISIBLE
             usersList.visibility = View.GONE
@@ -507,9 +505,7 @@ class ShareFileFragment : Fragment(), ShareUserListAdapter.ShareUserAdapterListe
             noPublicLinks.visibility = View.GONE
             publicLinksList.visibility = View.VISIBLE
             publicLinksList.adapter = publicLinksAdapter
-            setListViewHeightBasedOnChildren(
-                publicLinksList
-            )
+            setListViewHeightBasedOnChildren(publicLinksList)
         } else {
             noPublicLinks.visibility = View.VISIBLE
             publicLinksList.visibility = View.GONE
