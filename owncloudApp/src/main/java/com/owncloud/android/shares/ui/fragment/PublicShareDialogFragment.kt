@@ -314,10 +314,8 @@ class PublicShareDialogFragment : DialogFragment() {
         // at 10.0.4 we don't need publicUploadPermission there anymore. By setting it to false
         // it will not be sent to the server.
         if (capabilities != null) {
-            publicUploadPermission =
-                capabilities?.versionMayor!! >= 10 &&
-                        (capabilities?.versionMinor!! > 1 || capabilities?.versionMicro!! > 3)
-                        && publicUploadPermission
+            val serverVersion = OwnCloudVersion(capabilities?.versionString!!)
+            publicUploadPermission = serverVersion.isPublicUploadPermissionNeeded && publicUploadPermission
         }
 
         if (!updating()) { // Creating a new public share
